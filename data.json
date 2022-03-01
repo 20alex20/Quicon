@@ -1,0 +1,291 @@
+{
+  "program": {
+    "main_program": {
+      "old": ["main_program< ><global> {< ><sth>< ><vs>}"],
+      "new": ["int main()< ><global>{ start_program(); <vs>< ><sth>< >\tprintf(\"\\n\"); system(\"pause\"); return END;\n} "]
+    },
+    "global_func": {
+      "old": [
+        "func passive <name_global_func> (<func_args>)< ><global> {< ><sth2>< ><vs2>}",
+        "func active <name_global_func> (<func_args>)< ><global> {< ><sth2>< ><vs2>}"
+      ],
+      "new": [
+        "<name_global_func> = __enlon(create__func(<real_name>, FALSE, <len><func_args><global><sth2><vs2>))",
+        "<name_global_func> = __enlon(create__func(<real_name>, TRUE, <len><func_args><global><sth2><vs2>))"
+      ],
+      "additional": "#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); <vs2>< ><sth2>< >}"
+    },
+    "constructor": {
+      "old": ["constructor <name_constructor> (<func_args>)< ><global> {< ><sth2>< ><vs2>}"],
+      "new": ["<name_constructor> = __enlon(create__func(<real_name>, FALSE, <len><func_args><global><sth2><vs2>))"],
+      "additional": "object* __create__<class_name_lower>(object* __func) {\n    start_func_0();\n    return __create_class(<class_name_capit>);\n}\n\n\n#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); <vs2>< ><sth2>< >}"
+    },
+    "method": {
+      "old": ["method <name_method> (<func_args>)< ><global> {< ><sth2>< ><vs2>}"],
+      "new": ["<name_method><>create__func(<real_name>, FALSE, <len><func_args><global><sth2><vs2>)"],
+      "additional": "#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); start_method(); <vs2>< ><sth2>< >}"
+    },
+    "double": {
+      "old": ["double method of <name_double> (<func_args_double>)< ><global> {< ><sth2>< ><vs2>}"],
+      "new": ["<name_double><>create__func(<real_name>, FALSE, <len><func_args_double><global><sth2><vs2>)"],
+      "additional": "#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define __class <class_name_upper2>\n#define __class_name <class_name_capit2>\n#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); start_method(); start_method2(); <vs2>< ><sth2>< >}"
+    }
+  },
+  "tags": {
+    "<args>": {
+      "old": ["< ><arg1>"],
+      "new": ["< ><arg1>"]
+    },
+    "<args2>": {
+      "old": [
+        "< ><arg1>",
+        "< >,"
+      ],
+      "new": [
+        "< ><arg1>",
+        "< >empty_arg"
+      ]
+    },
+    "<nam_args>": {
+      "old": [
+        "< ><var_name> =<arg1>",
+        "< ><var_name> =",
+        "< ><arg1>",
+        "< >"
+      ],
+      "new": [
+        "< >named_arg(<var_name>, <arg1>)",
+        "< >named_arg(<var_name>, empty_arg)",
+        "< ><arg1>",
+        "< >empty_arg"
+      ]
+    }
+  },
+  "words2": {
+    "if": {
+      "module": "braces",
+      "old": ["if <arg1>< >{<sth>< >}"],
+      "new": ["if_bool (<arg1>)< >{<sth>< >}"]
+    },
+    "elif": {
+      "module": "braces",
+      "old": ["elif <arg1>< >{<sth>< >}"],
+      "new": ["else if_bool (<arg1>)< >{<sth>< >}"]
+    },
+    "else": {
+      "module": "braces",
+      "old": ["else< >{<sth>< >}"],
+      "new": ["else< >{<sth>< >}"]
+    },
+    "for": {
+      "module": "braces",
+      "old": ["for <arg1>, <arg2>, <arg3>< >{<sth>< >}"],
+      "new": ["for (<arg1>; <arg2>; <arg3>)< >{<sth>< >}"]
+    },
+    "foreach": {
+      "module": "braces",
+      "it_is_for": true,
+      "old": ["foreach <var> from <arg1>< >{<sth>< >}"],
+      "new": ["assign(__iter, <arg1>); while (assign(<var>, do_method(__iter, next, 0, 0)))< >{<sth>< >}; <var> = create__noth"]
+    },
+    "while": {
+      "module": "braces",
+      "old": ["while <arg1>< >{<sth>< >}"],
+      "new": ["while (do_method(<arg1>, to_bool, 0, 0)->flag)< >{<sth>< >}"]
+    },
+    "func": {
+      "old": [
+        "func passive <name_func> (<func_args>)< ><global> {< ><sth2>< ><vs2>}",
+        "func active <name_func> (<func_args>)< ><global> {< ><sth2>< ><vs2>}"
+      ],
+      "new": [
+        "assign(<name_func>, create__func(<real_name>, FALSE, <len><func_args><global><sth2><vs2>)",
+        "assign(<name_func>, create__func(<real_name>, TRUE, <len><func_args><global><sth2><vs2>)"
+      ],
+      "additional": "#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); <vs2>< ><sth2>< >}"
+    },
+    "continue": {
+      "module": "single_line_expression",
+      "old": ["continue"],
+      "new": ["continue"]
+    },
+    "break": {
+      "module": "single_line_expression",
+      "old": ["break"],
+      "new": ["break"]
+    },
+    "return": {
+      "old": [
+        "return<end> <arg>",
+        "return<end>"
+      ],
+      "new": [
+        "<end>(<arg>)",
+        "<end>(create__noth())"
+      ]
+    }
+  },
+  "words": {
+    "TRUE": {
+      "module": "standard",
+      "old": ["TRUE"],
+      "new": ["create__bool(TRUE)"]
+    },
+    "FALSE": {
+      "module": "standard",
+      "old": ["FALSE"],
+      "new": ["create__bool(FALSE)"]
+    },
+    "NOTH": {
+      "module": "standard",
+      "old": ["NOTH"],
+      "new": ["create__noth()"]
+    },
+    "array": {
+      "module": "standard",
+      "old": [
+        "array[]<num>",
+        "array[<args2>< >]"
+      ],
+      "new": [
+        "create__array(<num>, NULL)",
+        "create__array(<len><args2>< >)"
+      ]
+    },
+    "type_iterator": {
+      "module": "standard",
+      "old": ["type_iterator( <arg1> )"],
+      "new": ["create__type_iterator(<arg1>)"]
+    },
+    "\"": {
+      "module": "standard",
+      "old": [
+        "\"<text>\"utf8",
+        "\"<text>\"w1251",
+        "\"<text>\"us_ascii",
+        "\"<text>\""
+      ],
+      "new": [
+        "create__string(\"<text>\", UTF_8)",
+        "create__string(\"<text>\", WINDOWS_1251)",
+        "create__string(\"<text>\", US_ASCII)",
+        "create__string(\"<text>\", UTF_8)"
+      ]
+    },
+    "(": {
+      "module": "standard",
+      "old": ["(<arg>< >)"],
+      "new": ["<arg>< >"]
+    },
+    "!": {
+      "module": "standard",
+      "old": ["! <rec>"],
+      "new": ["not(<rec>)"]
+    },
+    "<num_var>": {
+      "old": ["<v>"],
+      "new": ["<v>"]
+    },
+    "StopIteration": {
+      "old": ["StopIteration"],
+      "new": ["StopIteration"]
+    }
+  },
+  "after_variable": {
+    "[": {
+      "module": "standard",
+      "old": [
+        "[<arg1>] = <arg2>",
+        "[<arg>]",
+        "[<args2>]"
+      ],
+      "new": [
+        "do_method(<v>, pubi, 2, 0, <arg1>, <arg2>)",
+        "do_method(<v>, tabi, 1, 0, <arg>)",
+        "do_method(<v>, slice, <len>, 0<args2>)"
+      ]
+    },
+    ".": {
+      "module": "standard",
+      "old": [".<var_name>(<nam_args>< >)", ".<var_name> = <arg2>", ".<var_name>"],
+      "new": ["do_method(<v>, <var_name>, <len>, <len><nam_args>< >)", "assign(from(<v>, <var_name>), <arg2>)", "from(<v>, <var_name>)"]
+    },
+    "(": {
+      "module": "standard",
+      "old": ["(<nam_args>< >)"],
+      "new": ["do_func(<v>, <len>, <len><nam_args>< >)"]
+    }
+  },
+  "operators": {
+    "*": {
+      "order": 1,
+      "type": 1,
+      "name": "multiply"
+    },
+    "/": {
+      "order": 1,
+      "type": 1,
+      "name": "divide"
+    },
+    "%": {
+      "order": 1,
+      "type": 1,
+      "name": "rod"
+    },
+    "+": {
+      "order": 2,
+      "type": 1,
+      "name": "addout"
+    },
+    "-": {
+      "order": 2,
+      "type": 1,
+      "name": "subtractout"
+    },
+    "==": {
+      "order": 3,
+      "type": 1,
+      "name": "equal"
+    },
+    "!=": {
+      "order": 3,
+      "type": 2,
+      "name": "equal"
+    },
+    ">": {
+      "order": 3,
+      "type": 1,
+      "name": "more"
+    },
+    ">=": {
+      "order": 3,
+      "type": 2,
+      "name": "less"
+    },
+    "<": {
+      "order": 3,
+      "type": 1,
+      "name": "less"
+    },
+    "<=": {
+      "order": 3,
+      "type": 2,
+      "name": "more"
+    },
+    "~": {
+      "order": 4,
+      "type": 3,
+      "name": "is"
+    },
+    "&": {
+      "order": 5,
+      "type": 3,
+      "name": "and"
+    },
+    "|": {
+      "order": 6,
+      "type": 3,
+      "name": "or"
+    }
+  }
+}

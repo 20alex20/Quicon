@@ -1,0 +1,4 @@
+#include "all.h"
+#define __FILE main_c
+char* main_c = "main.c";
+
