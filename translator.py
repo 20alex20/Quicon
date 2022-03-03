@@ -1,5 +1,5 @@
 import json
-# from pprint import pprint
+from shutil import copy
 from itertools import product
 from files_txt import files_dict
 
@@ -37,6 +37,7 @@ end = []
 class_name = None
 arg_class = []
 doubles = dict()
+cur_file = None
 
 
 def parse(string: str):
@@ -90,7 +91,7 @@ def fatal_error(s: str, s2=''):
 
 
 def error(s: str):
-    errors[-1].append((cur_i, s))
+    errors[-1].append((cur_i, cur_file, s))
     return '@' + s + '@'
 
 
@@ -541,10 +542,8 @@ def recursia(flag=None, is_sth=False, q=False):
     else:
         word = flag
     if is_sth:
-        print(word)
         if "it_is_for" in word:
             vars[-1].append("__iter")
-            print('kkkkk')
         have_additional = "additional" in word
         if have_additional:
             parse_additional_string_original = parse(word["additional"])
@@ -651,7 +650,7 @@ def create_class(data_class, generate_class):
 
 
 def program():
-    global cur_i, is_global, class_name, current_data
+    global cur_i, is_global, class_name, current_data, cur_file
     while True:
         s = old_string[cur_i]
         while s in tabs:
@@ -663,6 +662,7 @@ def program():
         if word == "class":
             cur_i = i
             cur_i, class_name = fragment2("Такое название класса не допустимо")
+            cur_file = class_name.lower() + ".c"
             class_name = class_name.capitalize()
             skip_tabs()
             if old_string[cur_i] != '{':
@@ -683,7 +683,8 @@ def program():
             cur_i = i
             cur_i, class_name = fragment2("Откуда число?!!!")
             if class_name == 'class':
-                cur_i, class_name = fragment2("Такое класса конструкции не допустимо")
+                cur_i, class_name = fragment2("Такое название класса конструкции не допустимо")
+            cur_file = class_name.lower() + ".c"
             class_name = class_name.capitalize()
             skip_tabs()
             if old_string[cur_i] != '{' or class_name not in data_additional["classes"]:
@@ -698,6 +699,7 @@ def program():
             arg_class.clear()
             class_name = None
         elif word == "main_program":
+            cur_file = "main.c"
             if data_main["main_program"]:
                 break
             current_data = data_main["main_program"]
@@ -706,12 +708,14 @@ def program():
                 break
             data_main["main_program"].append(ans)
         elif word == "func":
+            cur_file = "functions.c"
             current_data = data_additional["funcs"]
             ans = recursia(small_program["global_func"], True)
             if ans is None:
                 break
             data_main["global_func"].append(ans)
         else:
+            cur_file = "start_program.c"
             cur_i = i
             is_global = True
             ans = fragment3()
@@ -726,9 +730,7 @@ def program():
 
 
 def files(directory: str):
-    print(data_additional)
     directories = []
-    directory += '/'
     classes = files_dict["constants.h"]["class_name"]
     classes = classes[:3] + sorted(classes[3:] + list(data_additional["classes"].keys()))
 
@@ -852,6 +854,10 @@ def files(directory: str):
         directories.append(file_name)
         with open(file_name, 'w+', encoding='utf8') as file:
             file.write(file_string + '\n')
+
+    for name in ('array.c', 'bool.c', 'class_name.c', 'error.c', 'func.c', 'garbage_collector.c',
+                 'hidden.c', 'int.c', 'range.c', 'string.c', 'type_iterator.c'):
+        copy("files/" + name, directory)
     return directories
 
 
@@ -874,10 +880,24 @@ def from_qc_to_c_2(string: str, directory: str):
         directories = files(directory)
         # pprint(data_main, width=200)
         # pprint(data_additional, width=200)
-        return "Трансляция произведена успешно", errors, directories
+        return "Трансляция произведена успешно", new_errors(), directories
     except Exception as e:
-        return "Я без понятия, что ты в коде понаписал!", errors, e
-    return "Что-то пошло не так...", errors, fatality
+        return "Я без понятия, что ты в коде понаписал!", new_errors(), str(e)
+    return "Что-то пошло не так...", new_errors(), fatality
+
+
+def new_errors():
+    global errors
+    new_es = []
+    cur_i = 0
+    cur_n = 1
+    for i, file, string in sorted(errors[0]):
+        while cur_i != i:
+            if old_string[cur_i] == '\n':
+                cur_n += 1
+            cur_i += 1
+        new_es.append((file, cur_n, string))
+    return sorted(new_es)
 
 
 string = """

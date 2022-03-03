@@ -7,8 +7,8 @@ object __const_noth = { NOTH, NULL, NULL, NULL, NULL, NULL };
 
 
 void start_program() {
-	system("chcp 65001");
-	system("cls");
+	SetConsoleOutputCP(65001);
+	SetConsoleCP(1251);
 	__flag = FALSE;
 	create__noth = &__const_noth;
 	return_self = __enlon(create__func(__return_self, FALSE, 1, NULL));
@@ -53,4 +53,5 @@ void start_program() {
 	is_instance = __enlon(create__func(__is_instance, FALSE, 2, NULL, NULL));
 	to_another_type = __enlon(create__func(__to_another_type, FALSE, 2, NULL, NULL));
 	end_program = __enlon(create__func(__end_program, FALSE, 0));
+	input = __enlon(create__func(__input, FALSE, 1, create__string("", US_ASCII)));
 

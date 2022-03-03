@@ -34,7 +34,7 @@ files_dict = {
             'to_windows1251': [('STRING', 13, True)]
         },
         "global_vars_read": ["range", "print", "length", "copy", "type_of", "is_instance",
-                             "to_another_type", "end_program", "return_self"],
+                             "to_another_type", "end_program", "return_self", "input"],
         "doubles": """object* {double_name} (object* __func, object* self, object* self2, ...) {{
 	start_func(NULL, arg(self), 1, arg(self2), 2);
 	static uint class_names[] = {{ {classes} }};

@@ -50,8 +50,8 @@ class App:
         notebooks = (self.notebook1, self.notebook2)
         self.bottom = ttk.Notebook(self.root)
         self.image = ImageTk.PhotoImage(file="images/error24.png")
-        self.error = Error()
-        self.bottom.add(self.error, compound=tk.LEFT, image=self.image, text='Ошибки (0)',
+        error = Error()
+        self.bottom.add(error, compound=tk.LEFT, image=self.image, text='Ошибки (0)',
                         sticky="NSWE")
 
         self.notebook1.pack(side=tk.LEFT, fill='both', expand=True)
@@ -73,7 +73,7 @@ class App:
         self.root.config(menu=menuBar)
 
     def onWindowConfigure(self, event):
-        self.error.frame.canvas.configure(height=self.root.winfo_height()//4)
+        error.frame.canvas.configure(height=self.root.winfo_height()//4)
 
     def open_file(self):
         for name in filedialog.askopenfilename(filetypes=simple_list, multiple=True):
@@ -119,7 +119,7 @@ class NoteAndButtons(ttk.Frame):
         self.image2 = ImageTk.PhotoImage(file="images/save28.png")
         tk.Button(self.menu, image=self.image2, command=self.note.save, highlightthickness=0,
                   bd=0).pack(side=tk.LEFT, padx=5)
-        if typ != 'QC-файлы':
+        if typ == 'QC-файлы':
             self.image3 = ImageTk.PhotoImage(file="images/c28.png")
             tk.Button(self.menu, image=self.image3, command=self.note.qc_in_c, highlightthickness=0,
                       bd=0).pack(side=tk.LEFT, padx=5)
@@ -167,18 +167,20 @@ class MyNotebook(CustomNotebook):
         global notebooks, error
         if notebooks[1].note.cur_tab is not None:
             text = notebooks[1].note.cur_tab.text.get("1.0", END1C)
-            message, errors, additional = from_qc_to_c_2(text, "C:/Users/alexs/source/repos/Summer project/Project1")
+            message, errors, additional = from_qc_to_c_2(text, "D:/Summer project/")
             if message == "Трансляция произведена успешно":
                 messagebox.showinfo("Информация", message)
                 for name in additional:
                     file = open(name, 'r+', encoding='utf-8')
-                    self.add_tab(*parse(name), file.read())
+                    notebooks[0].note.add_tab(*parse(name), file.read())
                     file.close()
             elif message == "Что-то пошло не так...":
-                messagebox.showinfo(message + '\n' + additional)
-                error.add_all(errors, self.cur_tab.name)
+                messagebox.showinfo("Информация", message + '\n' + additional)
             else:
-                messagebox.showinfo("Критическая ошибка")
+                messagebox.showinfo("Информация", "Критическая ошибка" + '\n' + additional)
+            if errors:
+                print(errors)
+                error.add_all(errors)  # , self.cur_tab.name
 
     def select_tab(self, event):
         if self.num_tabs > 0:
@@ -312,8 +314,8 @@ class Error(ttk.Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-    def add(self, error, text, line, file):
-        tk.Label(self.frame.viewPort, font=("Consolas", 13), text=error, padx=8, pady=3,
+    def add(self, file, line, text):
+        tk.Label(self.frame.viewPort, font=("Consolas", 13), text="Ошибка трансляции",padx=8, pady=3,
                  bg='white', anchor='w').grid(row=self.number, column=0, sticky='WE')
         tk.Label(self.frame.viewPort, font=("Verdena", 12), text=text, padx=8, pady=3,
                  bg='white', anchor='w').grid(row=self.number, column=1, sticky='WE')
@@ -322,9 +324,9 @@ class Error(ttk.Frame):
         tk.Label(self.frame.viewPort, font=("Consolas", 13), text=line, padx=8, pady=3,
                  bg='white', anchor='e').grid(row=self.number, column=3, sticky='WE')
 
-    def add_all(self, args: list, file):
+    def add_all(self, args: list):
         for i in args:
-            self.add(*i, file)
+            self.add(*i)
             self.number += 1
         self.number = 0
 
