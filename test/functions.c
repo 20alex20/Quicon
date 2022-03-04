@@ -153,4 +153,44 @@ object* __print(object* __func, object* arr, object* before, object* between, ob
 }
 
 
+#define clear (0)
+object* __input(object* __func, object* start_str, ...) {
+	start_func(NULL, arg(start_str), 1);
+	object* ans = NULL;
+	char symb, cur_len = 0;
+	ull length = 0;
+	uchar* current = malloc(lenptr * 2), * start = current, * next;
+
+	if (not(do_method(start_str, equal, 1, 0, create__string("", US_ASCII))))
+		do_func(print, 1, 1, start_str, named_arg(after, create__string("", US_ASCII)));
+	symb = getchar();
+	while (symb != '\n') {
+		current[cur_len] = symb;
+		cur_len += 1;
+		if (cur_len == 8) {
+			next = malloc(lenptr * 2);
+			*((size_t*)current + 1) = next;
+			current = next;
+			cur_len = 0;
+			length += 1;
+		}
+		symb = getchar();
+	}
+	assign(ans, create__string(NULL, malloc(length * 8 + cur_len + 1), WINDOWS_1251, length * 8 + cur_len));
+	next = ans->start;
+	for (ull i = 0; i < length; i++) {
+		for (char j = 0; j < 8; j++)
+			*next++ = start[j];
+		current = start;
+		start = *((size_t*)start + 1);
+		free(current);
+	}
+	for (char j = 0; j < cur_len; j++)
+		*next++ = start[j];
+	*next = END;
+	free(start);
+	returnf(ans);
+
+}
+
 

@@ -750,7 +750,7 @@ def files(directory: str):
         with open("files/" + file_name, 'r') as file:
             file_string = file.read()
         if file_name == "constants_h.txt":
-            file_string += "typedef enum {\n\tNOTH, BOOL, CLASS_NAME, " + \
+            file_string += "typedef enum {\n\t " + \
                            ', '.join(map(lambda x: x.upper(), classes)) + "\n} class_name;\n\n"
             names = sorted(files_dict["constants.h"]["named_args"] |
                            set(map(lambda x: '__' + x + '_arg', all_args_names)))
@@ -837,7 +837,7 @@ def files(directory: str):
             file_string += "\nuint * __to_another_type_arr[] = {" + \
                            ", ".join([f"var(to_{i.lower()})" if ('to_' + i.lower() in var)
                                       else "NULL" for i in classes]) + '};'
-        if file_name[-5] == 'h':
+        if file_name[-5] == 'h' and file_name != 'global_variables_h.txt':
             file_string += '\n\n#endif'
         file_name = directory + file_name[:-6] + '.' + file_name[-5]
         directories.append(file_name)
@@ -874,8 +874,9 @@ def from_qc_to_c_2(string: str, directory: str):
     small_program = data["program"]
     old_string = string
 
+    program()
     try:
-        program()
+        pass
     except IndexError as e:
         directories = files(directory)
         # pprint(data_main, width=200)
@@ -901,26 +902,84 @@ def new_errors():
 
 
 string = """
-func passive j(do_it, arr[]) {
-    print(do_it);
+func passive is_leap (n, month) {
+    if month != 2 {
+        return 0;
+    };
+    if (n % 100 != 0 & n % 4 == 0) | n % 400 == 0 {
+       return 1;
+    };
+    return 0;
+}
+
+
+class Date_time {
+
+arr_days = array[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+constructor (self, year=1970, month=1, day=1, hour=0, minute=0, second=0) {
+    minute = minute + second / 60;
+    self.second = second % 60;
+    hour = hour + minute / 60;
+    self.minute = minute % 60;
+    day = day + hour / 24;
+    self.hour = day % 24;
+    year = year + (month - 1) / 12;
+    month = (month - 1) % 12 + 1;
+
+    cur_days = self.arr_days[month - 1] + is_leap(year, month);
+    while days > cur_days {
+        days = days - cur_days;
+        month = month + 1;
+        if month == 13 {
+            year = year + 1;
+            month = 1;
+        };
+        cur_days = self.arr_days[month - 1] + is_leap(year, month);
+    };
+    self.month = month;
+    self.year = year;
+}
+
+method today (self) {
+    return Date_time(year=1970, month=1, day=1);
+}
+method now (self) {
+    return Date_time(year=1970, month=1, day=1, hour=0, minute=0, second=0);
+}
+
+double method + with Dt_delta (self, self2) {
+    return Date_time(year=self.year, month=self.month, day=self.day, hour=self.hour, minute=self.minute, second=self.second + self2.seconds);
+}
+
+}
+
+
+class Dt_delta {
+
+constructor (self, days=0, hours=0, minutes=0, seconds=0) {
+    self.seconds = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
+}
+
+method today (self) {
+    return Date_time(year=1970, month=1, day=1);
+}
+method now (self) {
+    return Date_time(year=1970, month=1, day=1, hour=0, minute=0, second=0);
+}
+
+double method + with Dt_delta (self, self2) {
+    return Dt_delta(self.seconds + self2.seconds);
+}
+
+double method + with Date_time (self, self2) {
+    return Date_time(year=self2.year, month=self2.month, day=self2.day, hour=self2.hour, minute=self2.minute, second=self2.second + self.seconds);
+}
+
 }
 
 main_program {
-    foreach i from range(current=9) {
-        print("ok\\\"");
-        h = 4 ~ -3range.k(8);
-    };
-    func passive j(name=range(0, 8), arr[]) {
-        u = 0;
-        u.l = 0;
-        return NOTH;
-    };
-} 
-class My {
-    m = 0;
-    constructor (self, me) {
-        self.j = me;
-    }
+    print(0);
 }
 """
 
@@ -932,7 +991,7 @@ func passive is_sample (num) {
     if num % 2 == 0 {
         return FALSE;
     };
-    i = 2;
+    i = 3;
     while i * i < num {
         if num % i == 0 {
             return FALSE;
@@ -984,4 +1043,4 @@ main_program {
 if __name__ == '__main__':
     logs = True
     print(len(string2))
-    print('', *from_qc_to_c_2(string2, "test"), sep='\n')
+    print('', *from_qc_to_c_2(string, "test/"), sep='\n')

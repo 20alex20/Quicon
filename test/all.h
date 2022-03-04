@@ -50,13 +50,6 @@ object* __dtp(object* sth1, object* sth2);
 object* __dap(object** sth, ushort numargs);
 object* __clear(size_t n, ...);
 
-ull to_ctype(object* sth, uchar len, bool flag);
-size_t to_c_size_t(object* sth);
-int to_c_int(object* sth);
-uint to_c_uint(object* sth);
-long long to_c_long_long(object* sth);
-ull to_ull(object* sth);
-
 
 object* __return_self(object* __func, object* self, ...);
 object* __end_program(object* __func, ...);
@@ -66,6 +59,7 @@ object* __type_of(object* __func, object* self, ...);
 object* __is_instance(object* __func, object* self, object* name, ...);
 object* __to_another_type(object* __func, object* self, object* name, ...);
 object* __print(object* __func, object* arr, object* before, object* between, object* after, ...);
+object* __input(object* __func, object* start_str, ...);
 
 object* create__int(bool flag, intptr_t decnum);
 object* __to_string__int(object* __func, object* self, ...);

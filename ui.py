@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk
+from tkinter import filedialog, messagebox, ttk, simpledialog
 from PIL import ImageTk
 from CustomNotebook import CustomNotebook
 from ScrollFrame import ScrollFrame
@@ -13,6 +13,7 @@ simple_list = [("Программный файл (*.qc)", '.qc'),
                ("Текстовый документ (*.txt)", '.txt')]
 notebooks = None
 error = None
+application_window = None
 
 
 def parse(s: str):
@@ -35,8 +36,9 @@ def current_type_list(s: str):
 
 class App:
     def __init__(self):
-        global notebooks, error
+        global notebooks, error, application_window
         self.root = tk.Tk()
+        application_window = self.root
         self.root.geometry("680x500")
         self.root.state('zoomed')
         self.root.iconbitmap('images/icon.ico')
@@ -167,7 +169,8 @@ class MyNotebook(CustomNotebook):
         global notebooks, error
         if notebooks[1].note.cur_tab is not None:
             text = notebooks[1].note.cur_tab.text.get("1.0", END1C)
-            message, errors, additional = from_qc_to_c_2(text, "D:/Summer project/")
+            ans = filedialog.askdirectory()
+            message, errors, additional = from_qc_to_c_2(text, ans + '/')
             if message == "Трансляция произведена успешно":
                 messagebox.showinfo("Информация", message)
                 for name in additional:
@@ -203,10 +206,10 @@ class Tab(ttk.Frame):
         height = 1
         width = 1
 
-        self.text = tk.Text(self, wrap='none', font=("Consolas", 14), yscrollcommand=self.onysco,
+        self.text = tk.Text(self, wrap='none', font=("Consolas", 13), yscrollcommand=self.onysco,
                             padx=5, width=width, height=height, bd=3)
         self.scrollby = ttk.Scrollbar(self, orient=tk.VERTICAL, command=self.scroll_command)
-        self.numbers = tk.Text(self, font=("Consolas", 14), width=4, height=height, bg='lightgray',
+        self.numbers = tk.Text(self, font=("Consolas", 13), width=4, height=height, bg='lightgray',
                                state=tk.DISABLED, relief=tk.FLAT, padx=5, pady=3,
                                exportselection=False)
         self.scrollby2 = ttk.Scrollbar(self, orient=tk.HORIZONTAL, command=self.text.xview)
@@ -231,21 +234,21 @@ class Tab(ttk.Frame):
         self.menu.add_command(label="Копировать", command=self.copy)
         self.menu.add_command(label="Вставить", command=self.paste)
         self.text.bind('<Button-3>', self.popup)
-        self.text.bind('<Control-x>', self.cut)
-        self.text.bind('<Control-c>', self.copy)
-        self.text.bind('<Control-v>', self.paste)
+        # self.text.bind('<Control-x>', self.cut)
+        # self.text.bind('<Control-c>', self.copy)
+        # self.text.bind('<Control-v>', self.paste)
 
-    def popup(self, event):
+    def popup(self, event=None):
         self.menu.post(event.x_root, event.y_root)
 
-    def copy(self):
+    def copy(self, event=None):
         pc.copy(self.text.get(tk.SEL_FIRST, tk.SEL_LAST))
 
-    def cut(self):
+    def cut(self, event=None):
         self.copy()
-        self.text.delete(tk.SEL_FIRST, tk.SEL_LAST)
+        # self.text.delete(tk.SEL_FIRST, tk.SEL_LAST)
 
-    def paste(self):
+    def paste(self, event=None):
         self.text.insert(tk.INSERT, pc.paste())
 
     def scroll_command(self, *args):

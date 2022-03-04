@@ -49,9 +49,7 @@ struct MY {
 };
 
 
-extern uint var(to_array)[], var(bin)[], var(step)[], var(multiply)[], var(to_func)[], var(reverse)[], var(my)[], var(more)[], var(divide)[], var(less)[], var(to_windows1251)[], var(to_utf8)[], var(change)[], var(stop)[], var(er)[], var(tabi)[], var(rod)[], var(numsign)[], var(to_bool)[], var(to_type_iterator)[], var(subtractout)[], var(addout)[], var(equal)[], var(slice)[], var(to_range)[], var(to_string)[], var(module)[], var(k)[], var(current)[], var(to_int)[], var(next)[], var(pubi)[];
+extern uint var(to_int)[], var(rod)[], var(module)[], var(er)[], var(k)[], var(addout)[], var(equal)[], var(to_bool)[], var(more)[], var(to_type_iterator)[], var(reverse)[], var(bin)[], var(slice)[], var(current)[], var(tabi)[], var(to_func)[], var(stop)[], var(subtractout)[], var(to_range)[], var(multiply)[], var(change)[], var(step)[], var(to_string)[], var(to_array)[], var(to_utf8)[], var(less)[], var(to_windows1251)[], var(my)[], var(pubi)[], var(next)[], var(numsign)[], var(divide)[];
 
 object* Noth, * Bool, * ClassName, * Array, * Func, * Int, * List, * My, * Range, * String, * TypeIterator;
-object* range, * print, * length, * copy, * type_of, * is_instance, * to_another_type, * end_program, * return_self, * my, * my;
-
-#endif
+object* range, * print, * length, * copy, * type_of, * is_instance, * to_another_type, * end_program, * return_self, * input, * my, * my;

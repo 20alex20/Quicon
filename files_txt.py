@@ -45,7 +45,7 @@ files_dict = {
     "constants.h": {
         "named_args": {"__after_arg", "__arr_arg", "__before_arg", "__between_arg", "__name_arg",
                        "__num_arg", "__self_arg", "__self2_arg", "__start_arg", "__step_arg",
-                       "__sth_arg", "__stop_arg", "__str_arg"},
+                       "__sth_arg", "__stop_arg", "__str_arg", "__start_str_arg"},
         "class_name": ["NOTH", "BOOL", "CLASS_NAME", "ARRAY", "FUNC", "INT", "LIST", "STRING",
                        "TYPE_ITERATOR", "RANGE"]
     },

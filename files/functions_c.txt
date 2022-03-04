@@ -155,7 +155,7 @@ object* __print(object* __func, object* arr, object* before, object* between, ob
 
 #define clear (0)
 object* __input(object* __func, object* start_str, ...) {
-	start_func(NULL, arg(start_str), 1, arg(stop_symbol), 2);
+	start_func(NULL, arg(start_str), 1);
 	object* ans = NULL;
 	char symb, cur_len = 0;
 	ull length = 0;
