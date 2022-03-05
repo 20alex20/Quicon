@@ -193,4 +193,23 @@ object* __input(object* __func, object* start_str, ...) {
 
 }
 
-
+#define clear (1, i)
+object* __is_sample (object* __func, object* num, ...) { start_func(NULL, arg(num), 1); object* i = NULL;
+    if_bool (do_method(num, equal, 1, 0, create__int(FALSE, 2))) {
+        returnf(create__bool(TRUE));
+    }
+    if_bool (do_method(do_method(num, rod, 1, 0, create__int(FALSE, 2)), equal, 1, 0, create__int(FALSE, 0))) {
+        returnf(create__bool(FALSE));
+    }
+    assign(i, create__int(FALSE, 3));
+    while (do_method(do_method(do_method(i, multiply, 1, 0, i), less, 1, 0, num), to_bool, 0, 0)->flag) {
+        if_bool (do_method(do_method(num, rod, 1, 0, i), equal, 1, 0, create__int(FALSE, 0))) {
+            returnf(create__bool(FALSE));
+        }
+        assign(i, do_method(i, addout, 1, 0, create__int(FALSE, 2)));
+    }
+    if_bool (do_method(do_method(num, rod, 1, 0, i), equal, 1, 0, create__int(FALSE, 0))) {
+        returnf(create__bool(FALSE));
+    }
+    returnf(create__bool(TRUE));
+}

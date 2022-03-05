@@ -74,11 +74,11 @@ typedef enum {
 } errors;
 
 typedef enum {
-	 NOTH, BOOL, CLASS_NAME, ARRAY, FUNC, INT, LIST, MY, RANGE, STRING, TYPE_ITERATOR
+	 NOTH, BOOL, CLASS_NAME, ARRAY, FUNC, INT, LIST, RANGE, STRING, TYPE_ITERATOR
 } class_name;
 
 enum named_args {
-	__ self2_arg, __after_arg, __arr_arg, __before_arg, __between_arg, __name_arg, __num_arg, __self2_arg, __self_arg, __start_arg, __start_str_arg, __step_arg, __sth_arg, __stop_arg, __str_arg
+	__after_arg, __arr_arg, __before_arg, __between_arg, __name_arg, __num_arg, __self2_arg, __self_arg, __start_arg, __start_str_arg, __step_arg, __sth_arg, __stop_arg, __str_arg
 };
 
 #endif

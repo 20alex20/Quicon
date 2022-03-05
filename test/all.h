@@ -118,11 +118,6 @@ object* __range(object* __func, object* self, object* start, object* stop, objec
 object* __next__range(object* __func, object* self, ...);
 
 
-
-object* __create__my(object* __func);
-
-object* __next__my (object* __func, object* self, ...);
-
-object* __addout__my (object* __func, object* self, object* self2, ...);
+object* __is_sample (object* __func, object* num, ...);
 
 #endif

@@ -7,7 +7,7 @@ typedef struct {
 	size_t len;
 } object;
 
-object* __boofer, * __boofer2, * create__noth, * __classes[13], * __variables;
+object* __boofer, * __boofer2, * create__noth, * __classes[12], * __variables;
 
 
 struct Int {
@@ -41,15 +41,8 @@ struct RANGE {
 	object* current, * step, * stop, * numsign;
 };
 
-struct My {
-	object* k, * next, * addout;
-};
-struct MY {
-	object* er;
-};
 
+extern uint var(multiply)[], var(subtractout)[], var(numsign)[], var(stop)[], var(my)[], var(reverse)[], var(next)[], var(change)[], var(to_string)[], var(equal)[], var(bin)[], var(to_bool)[], var(to_windows1251)[], var(step)[], var(current)[], var(to_func)[], var(module)[], var(tabi)[], var(rod)[], var(addout)[], var(to_range)[], var(pubi)[], var(more)[], var(slice)[], var(less)[], var(divide)[], var(to_utf8)[], var(to_array)[], var(to_int)[], var(to_type_iterator)[];
 
-extern uint var(to_int)[], var(rod)[], var(module)[], var(er)[], var(k)[], var(addout)[], var(equal)[], var(to_bool)[], var(more)[], var(to_type_iterator)[], var(reverse)[], var(bin)[], var(slice)[], var(current)[], var(tabi)[], var(to_func)[], var(stop)[], var(subtractout)[], var(to_range)[], var(multiply)[], var(change)[], var(step)[], var(to_string)[], var(to_array)[], var(to_utf8)[], var(less)[], var(to_windows1251)[], var(my)[], var(pubi)[], var(next)[], var(numsign)[], var(divide)[];
-
-object* Noth, * Bool, * ClassName, * Array, * Func, * Int, * List, * My, * Range, * String, * TypeIterator;
-object* range, * print, * length, * copy, * type_of, * is_instance, * to_another_type, * end_program, * return_self, * input, * my, * my;
+object* Noth, * Bool, * ClassName, * Array, * Func, * Int, * List, * Range, * String, * TypeIterator;
+object* range, * print, * length, * copy, * type_of, * is_instance, * to_another_type, * end_program, * return_self, * input, * is_sample;

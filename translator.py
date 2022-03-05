@@ -743,7 +743,7 @@ def files(directory: str):
                                doubles=', '.join(map(lambda x: x[0], name_cname[1:])),
                                classes=', '.join(map(lambda x: x[1], name_cname[1:])),
                                main_double=name_cname[0]))
-        data_additional['classes'][cname]["vars"].append(double_name[2:double_name.index('_', 2)])
+            data_additional['classes'][cname]["vars"].append(double_name[2:double_name.index('_', 2)])
         doubles2[cname] = doubles_new
     for file_name in ("constants_h.txt", "main_c.txt", "all_h.txt", "global_variables_h.txt",
                       "start_program_c.txt", "functions_c.txt"):
@@ -862,7 +862,37 @@ def files(directory: str):
 
 
 def from_qc_to_c_2(string: str, directory: str):
-    global tags, words, words2, old_string, after_variable, operators_word, small_program
+    global tags, words, words2, old_string, after_variable, operators_word, small_program, cur_i, logs, fatality, errors, global_vars_read, global_vars_write, vars, args, \
+        data_main, current_data, is_global, name_realname, end, class_name, arg_class, doubles, cur_file
+    tags = dict()
+    words = dict()
+    words2 = dict()
+    after_variable = dict()
+    operators_word = dict()
+    small_program = dict()
+    logs = False
+    cur_i = 0
+    fatality = None
+    errors = [[]]
+    global_vars_write = [[]]
+    vars = [[]]
+    args = [[]]
+
+    all_args_names = set()
+    global_vars_read = []
+    data_additional = {"funcs": [], "args_names": all_args_names,
+                       "classes": dict(), "global_vars": global_vars_read}
+    data_main = {"main_program": [], "classes": dict(), "global_vars": [], "global_func": []}
+    current_data = data_additional["funcs"]
+
+    is_global = False
+    name_realname = dict()
+    end = []
+    class_name = None
+    arg_class = []
+    doubles = dict()
+    cur_file = None
+
     global_vars_read.extend(files_dict["start_program.c"]["global_vars_read"])
     with open("data.json", "r") as read_file:
         data = json.load(read_file)
@@ -874,9 +904,8 @@ def from_qc_to_c_2(string: str, directory: str):
     small_program = data["program"]
     old_string = string
 
-    program()
     try:
-        pass
+        program()
     except IndexError as e:
         directories = files(directory)
         # pprint(data_main, width=200)
@@ -1040,7 +1069,61 @@ main_program {
 }
 """
 
+string3 = """
+func passive is_leap (n) {
+    if (n % 100 != 0 & n % 4 == 0) | n % 400 == 0 {
+       return 1;
+    };
+    return 0;
+}
+
+
+class Days_in_month {
+
+arr_days = array[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+constructor (self, year) {
+    self.cur_year = year;
+    self.iterator = type_iterator(self.arr_days);
+}
+method next (self) {
+    ans = self.iterator.next();
+    if ans ~ StopIteration {
+        year = year + 1;
+        self.iterator = type_iterator(self.arr_days);
+        return self.iterator.next();
+    };
+    if ans == 28 {
+        ans = ans + is_leap(self.year);
+    };
+    return ans;
+}
+
+}
+
+main_program {
+    print2 = copy(print);
+    print2.change( , array[]0, start="month: ", between="; days in month: ");
+    
+    dm = Days_in_month(2000);
+    foreach month from range(2000 * 12, 2022 * 12 + 1) {
+        print2(month, dm.next());
+    };
+}
+"""
+
+string4 = """
+main_program {
+
+    print2 = copy(print);
+    print2.change( , array[]0, end="");
+    
+    foreach i from type_iterator("2789327") {
+        print2(i.to_int() + 1);
+    };
+    print("\nok");
+}
+"""
 if __name__ == '__main__':
     logs = True
     print(len(string2))
-    print('', *from_qc_to_c_2(string, "test/"), sep='\n')
+    print('', *from_qc_to_c_2(string1, "test/"), sep='\n')
