@@ -17,18 +17,18 @@
     },
     "constructor": {
       "old": ["constructor <name_constructor> (<func_args>)< ><global> {< ><sth2>< ><vs2>}"],
-      "new": ["<name_constructor> = __enlon(create__func(<real_name>, FALSE, <len><func_args><global><sth2><vs2>))"],
+      "new": ["<name_constructor><> = __enlon(create__func(<real_name>, FALSE, <><len><><func_args><global><sth2><vs2>))"],
       "additional": "object* __create__<class_name_lower>(object* __func) {\n    start_func_0();\n    return __create_class(<class_name_capit>);\n}\n\n\n#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); <vs2>< ><sth2>< >}"
     },
     "method": {
       "old": ["method <name_method> (<func_args>)< ><global> {< ><sth2>< ><vs2>}"],
       "new": ["<name_method><>create__func(<real_name>, FALSE, <len><func_args><global><sth2><vs2>)"],
-      "additional": "#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); start_method(); <vs2>< ><sth2>< >}"
+      "additional": "#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>)< >{ start_func<is_0>(<arr_num><func_args3>); start_method(); <vs2>< ><sth2>< >}"
     },
     "double": {
       "old": ["double method of <name_double> (<func_args_double>)< ><global> {< ><sth2>< ><vs2>}"],
       "new": ["<name_double><>create__func(<real_name>, FALSE, <len><func_args_double><global><sth2><vs2>)"],
-      "additional": "#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define __class <class_name_upper2>\n#define __class_name <class_name_capit2>\n#define clear (<len><vs>)\nobject* <real_name> (object* __func<func_args2>, ...)< >{ start_func<is_0>(<arr_num><func_args3>); start_method(); start_method2(); <vs2>< ><sth2>< >}"
+      "additional": "#define __class <class_name_upper>\n#define __class_name <class_name_capit>\n#define __class_2 <class_name_upper2>\n#define __class_name_2 <class_name_capit2>\n#define clear (<len><vs>)\nobject* <real_name> (<func_args2>, ...)< >{start_method2(); <vs2>< ><sth2>< >}"
     }
   },
   "tags": {

@@ -38,6 +38,7 @@ class_name = None
 arg_class = []
 doubles = dict()
 cur_file = None
+another_classes = dict()
 
 
 def parse(string: str):
@@ -206,6 +207,9 @@ def parse_tag(element: str):
             return to_replace, fatal_error("Символ '-' неправильно использован")
         elif txt == '':
             boofer = fragment1(num)
+        elif txt == 'array':
+            cur_i -= 5
+            return to_replace, recursia(words["array"])
         else:
             boofer = txt
             i = skip_tabs_sample()
@@ -216,7 +220,7 @@ def parse_tag(element: str):
                 elif boofer not in vars[-1] and boofer not in global_vars_write[-1] and \
                         boofer not in args[-1]:
                     vars[-1].append(boofer)
-                skip_tabs_sample()
+                skip_tabs()
                 a = arg()
                 if a is None:
                     return to_replace, None
@@ -237,7 +241,7 @@ def parse_tag(element: str):
                         if var_name in arr["vars"]:
                             boofer = error("Вызывать метод у класса нельзя")
                         else:
-                            if var_name not in arr["vars_instance"]:
+                            if "vars_instance" in arr and var_name not in arr["vars_instance"]:
                                 arr["vars_instance"].append(var_name)
                             boofer = f"do_method_from_self{st}(" + var_name + rec[index:]
                     else:
@@ -245,11 +249,11 @@ def parse_tag(element: str):
                         if var_name in arr["vars"]:
                             boofer = rec.replace('from(<v>, ', f'from_self_class{st}(')
                         else:
-                            if var_name not in arr["vars_instance"]:
+                            if "vars_instance" in arr and var_name not in arr["vars_instance"]:
                                 arr["vars_instance"].append(var_name)
                             boofer = rec.replace('from(<v>, ', f'from_self{st}(')
                     break
-                st = '_0'
+                st = '_2'
             else:
                 boofer = rec.replace("<v>", boofer)
 
@@ -364,10 +368,13 @@ def parse_tag(element: str):
                 cur_i, cname = fragment2("Данное для класса название невозможно")
                 if cname is None:
                     return to_replace, fatal_error("Неверно построен метод двойного применения3")
-                if cname.capitalize() not in data_additional["classes"]:
-                    cname = error("Неизвестный класс")
-                else:
+                cname = cname.capitalize()
+                if cname in data_additional["classes"]:
                     arg_class.append([cname, data_additional["classes"][cname]])
+                elif cname in another_classes:
+                    arg_class.append([cname, {"vars": another_classes[cname]}])
+                else:
+                    cname = error("Неизвестный класс")
                 to_replace = [("a<class_name_upper2>", cname.upper()),
                               ("a<class_name_capit2>", cname.capitalize())]
                 name += '_' + cname.lower()
@@ -398,9 +405,18 @@ def parse_tag(element: str):
             ans = recursia(tag)
             if ans is None:
                 return to_replace, None
-            args_names = ans.split('<>')
+            args_names = [i.lstrip() for i in ans.split('<>')]
             args_values = ''
             end.append('returnf2')
+            for i in range(len(arg_class)):
+                arg_class[i].append(args_names[i])
+            args.append(args_names)
+            args_names2 = [(i.lstrip(), k + 1) for k, i in enumerate(args_names)]
+            args_names2.sort()
+            to_replace = [("<len>", str(len(args_names))),
+                          ("a<func_args2>", ', '.join(map(lambda x: "object* " + x, args_names)))]
+            all_args_names |= set(args_names)
+            return to_replace, ''.join(args_values)
         else:
             tag = {
                 "old": ["< ><var_name> = <arg1> ", "< ><var_name>[] ",
@@ -541,6 +557,8 @@ def recursia(flag=None, is_sth=False, q=False):
             return None
     else:
         word = flag
+    if logs:
+        print(word)
     if is_sth:
         if "it_is_for" in word:
             vars[-1].append("__iter")
@@ -611,15 +629,18 @@ def create_class(data_class, generate_class):
             ans = recursia(small_program[word], True)
             if ans is None:
                 return None
+            name, start, num, endd = ans.split('<>')
+            global_vars_read.append(name)
+            global_vars_read.append(name.capitalize())
+            ans = name + start + num + endd.replace('NULL', 'create__func(__create__' + name +
+                                                    ', TRUE, 0)', 1)
             data_main["global_func"].append(ans)
-            global_vars_read.append(ans[:ans.index(' ')])
         elif word in ("method", "double"):
             current_data = data_class[word]
             ans = recursia(small_program[word], True)
             if ans is None:
                 return None
             name, ans = ans.split('<>')
-            generate_class.append(ans)
             if word == "double":
                 if len(arg_class) > 1:
                     arg_class = [arg_class[0]]
@@ -628,12 +649,13 @@ def create_class(data_class, generate_class):
                 cname = name[index + 1:]
                 name = '__' + name + '__' + class_name.lower()
                 if double_name in doubles[class_name]:
-                    if class_name == cname:
+                    if class_name.lower() == cname.lower():
                         doubles[class_name][double_name][0] = name
                 else:
-                    doubles[class_name][double_name] = [name if class_name == cname else "NULL"]
+                    doubles[class_name][double_name] = [name if class_name.lower() == cname.lower() else "NULL"]
                 doubles[class_name][double_name].append((name, cname.upper()))
             else:
+                generate_class.append(ans)
                 data_class["vars"].append(name)
         else:
             cur_i = i
@@ -698,6 +720,21 @@ def program():
                 break
             arg_class.clear()
             class_name = None
+        elif word == "declare":
+            cur_i = i
+            cur_i, class_name = fragment2("Откуда число?!!!")
+            if class_name == 'class':
+                cur_i, class_name = fragment2("Такое название класса конструкции не допустимо")
+            skip_tabs()
+            if old_string[cur_i] != '{':
+                break
+            cur_i += 1
+            i = cur_i
+            while old_string[cur_i] != '}':
+                cur_i += 1
+            a = old_string[i:cur_i].strip().split()
+            another_classes[class_name.capitalize()] = [i[:-1] if i[-1] == ',' else i for i in a]
+            cur_i += 1
         elif word == "main_program":
             cur_file = "main.c"
             if data_main["main_program"]:
@@ -730,21 +767,21 @@ def program():
 
 
 def files(directory: str):
+    ss = files_dict["start_program.c"]["doubles"]
+    for cname in data_additional["classes"]:
+        doubles_new = data_additional['classes'][cname]["double"]
+        for double_name, name_cname in doubles[cname].items():
+            doubles_new.append(ss.format(double_name=double_name,
+                                         doubles=', '.join(map(lambda x: x[0], name_cname[1:])),
+                                         classes=', '.join(map(lambda x: x[1], name_cname[1:])),
+                                         main_double=name_cname[0]))
+            data_additional['classes'][cname]["vars"].append(double_name[2:double_name.index('_', 2)])
+            data_main["classes"][cname].append(f"create__func({double_name}, FALSE, 2, NULL, NULL)")
+
     directories = []
     classes = files_dict["constants.h"]["class_name"]
     classes = classes[:3] + sorted(classes[3:] + list(data_additional["classes"].keys()))
 
-    doubles2 = dict()
-    ss = files_dict["start_program.c"]["doubles"]
-    for cname in data_additional["classes"]:
-        doubles_new = []
-        for double_name, name_cname in doubles[cname].items():
-            doubles_new.append(ss.format(double_name=double_name,
-                               doubles=', '.join(map(lambda x: x[0], name_cname[1:])),
-                               classes=', '.join(map(lambda x: x[1], name_cname[1:])),
-                               main_double=name_cname[0]))
-            data_additional['classes'][cname]["vars"].append(double_name[2:double_name.index('_', 2)])
-        doubles2[cname] = doubles_new
     for file_name in ("constants_h.txt", "main_c.txt", "all_h.txt", "global_variables_h.txt",
                       "start_program_c.txt", "functions_c.txt"):
         with open("files/" + file_name, 'r') as file:
@@ -762,15 +799,15 @@ def files(directory: str):
             for cname in data_additional["classes"]:
                 spisoks.append(data_additional["classes"][cname]["constructor"])
                 spisoks.append(data_additional["classes"][cname]["method"])
-                spisoks.append(doubles2[cname])
-            for spisok in spisoks:
-                file_string += '\n'
+                spisoks.append(data_additional["classes"][cname]["double"])
+            for k, spisok in enumerate(spisoks):
+                if k < 2 or (k + 1) % 3 == 0:
+                    file_string += '\n'
                 for i in spisok:
                     if "object* " in i:
                         sindex = i.find("object*")
                         fl = 1
                         while fl:
-                            fl = 0
                             index = sindex + 7
                             while i[index] in text or i[index] in tabs:
                                 index += 1
@@ -779,6 +816,8 @@ def files(directory: str):
                             if "__create__" in i and fl == 1:
                                 sindex = i.find("object*", i.index("#define __class"))
                                 fl = 2
+                            else:
+                                fl = 0
         elif file_name == "functions_c.txt":
             file_string += '\n\n'.join(data_additional["funcs"])
         elif file_name == "global_variables_h.txt":
@@ -800,11 +839,12 @@ def files(directory: str):
 
             file_string_part = "object* " + ', * '.join(map(lambda x: x.capitalize(), classes)) + \
                                ';\nobject* ' + ', * '.join(global_vars_read) + ';'
-            file_string += file_string_part.replace("Type_iterator", "TypeIterator").replace("Class_name", "ClassName")
+            file_string += file_string_part.replace("Type_iterator",
+                                                    "TypeIterator").replace("Class_name","ClassName")
         elif file_name == "start_program_c.txt":
             for cname in data_main['classes']:
-                file_string += f'\t{cname.lower()} = __enlon(create__class_name({cname.upper()}, ' \
-                               f'"{cname.capitalize()}", ' + \
+                file_string += f'\t{cname.capitalize()} = __enlon(create__class_name' \
+                               f'({cname.upper()}, "{cname.capitalize()}", ' + \
                                str(len(data_additional["classes"][cname]["vars_instance"])) + ', ' +\
                                str(len(data_main["classes"][cname])) + \
                                ''.join(map(lambda x: ", " + x, data_main["classes"][cname])) +\
@@ -844,12 +884,11 @@ def files(directory: str):
         with open(file_name, 'w+', encoding='utf8') as file:
             file.write(file_string + '\n')
     for cname in data_additional["classes"]:
-        doubles_new = doubles2[cname]
-        file_string = f'#include "all.h"\n#define __FILE {cname.lower()}_c\nchar* {cname.lower()}_c = "{cname.lower()}.c";\n\n\n'
-        file_string += '\n'.join(data_additional["classes"][cname]["constructor"]) + '\n\n' + \
-                       '\n'.join(data_additional["classes"][cname]["method"]) + '\n\n' + \
-                       '\n'.join(data_additional["classes"][cname]["double"]) + '\n\n' + \
-                       '\n'.join(doubles_new)
+        file_string = f'#include "all.h"\n#define __FILE {cname.lower()}_c\n' \
+                      f'char* {cname.lower()}_c = "{cname.lower()}.c";\n\n\n'
+        file_string += '\n\n'.join(data_additional["classes"][cname]["constructor"]) + '\n\n\n' + \
+                       '\n\n'.join(data_additional["classes"][cname]["method"]) + '\n\n\n' + \
+                       '\n\n'.join(data_additional["classes"][cname]["double"])
         file_name = directory + cname.lower() + '.c'
         directories.append(file_name)
         with open(file_name, 'w+', encoding='utf8') as file:
@@ -862,29 +901,21 @@ def files(directory: str):
 
 
 def from_qc_to_c_2(string: str, directory: str):
-    global tags, words, words2, old_string, after_variable, operators_word, small_program, cur_i, logs, fatality, errors, global_vars_read, global_vars_write, vars, args, \
-        data_main, current_data, is_global, name_realname, end, class_name, arg_class, doubles, cur_file
-    tags = dict()
-    words = dict()
-    words2 = dict()
-    after_variable = dict()
-    operators_word = dict()
-    small_program = dict()
-    logs = False
+    global tags, words, words2, old_string, after_variable, operators_word, small_program, cur_i, \
+        logs, fatality, errors, global_vars_read, global_vars_write, vars, args, data_main, \
+        current_data, is_global, name_realname, end, class_name, arg_class, doubles, cur_file, \
+        another_classes
     cur_i = 0
     fatality = None
     errors = [[]]
     global_vars_write = [[]]
     vars = [[]]
     args = [[]]
-
     all_args_names = set()
-    global_vars_read = []
     data_additional = {"funcs": [], "args_names": all_args_names,
                        "classes": dict(), "global_vars": global_vars_read}
     data_main = {"main_program": [], "classes": dict(), "global_vars": [], "global_func": []}
     current_data = data_additional["funcs"]
-
     is_global = False
     name_realname = dict()
     end = []
@@ -893,7 +924,8 @@ def from_qc_to_c_2(string: str, directory: str):
     doubles = dict()
     cur_file = None
 
-    global_vars_read.extend(files_dict["start_program.c"]["global_vars_read"])
+    another_classes = files_dict["start_program.c"]["vars"]
+    global_vars_read = list(files_dict["start_program.c"]["global_vars_read"])
     with open("data.json", "r") as read_file:
         data = json.load(read_file)
     words = data["words"]
@@ -930,6 +962,11 @@ def new_errors():
     return sorted(new_es)
 
 
+
+# ['assign(from(', '<v>', ', ', 'second', '), ', 'do_method(second, rod, 1, 0, create__int(FALSE, 60))', ')']
+# ['', 'assign(from(assign(from_self(second), do_method(second, rod, 1, 0, create__int(FALSE, 60))), second), do_method(second, rod, 1, 0, create__int(FALSE, 60)))', '']
+
+
 string = """
 func passive is_leap (n, month) {
     if month != 2 {
@@ -941,6 +978,16 @@ func passive is_leap (n, month) {
     return 0;
 }
 
+func passive add_0 (n) {
+    if n < 10 {
+        return "0" + n.to_string();
+    };
+    return n.to_string();
+}
+
+declare class Dt_delta {
+     
+}
 
 class Date_time {
 
@@ -957,8 +1004,8 @@ constructor (self, year=1970, month=1, day=1, hour=0, minute=0, second=0) {
     month = (month - 1) % 12 + 1;
 
     cur_days = self.arr_days[month - 1] + is_leap(year, month);
-    while days > cur_days {
-        days = days - cur_days;
+    while day > cur_days {
+        day = day - cur_days;
         month = month + 1;
         if month == 13 {
             year = year + 1;
@@ -966,19 +1013,24 @@ constructor (self, year=1970, month=1, day=1, hour=0, minute=0, second=0) {
         };
         cur_days = self.arr_days[month - 1] + is_leap(year, month);
     };
+    self.day = day;
     self.month = month;
     self.year = year;
+    return self;
 }
 
 method today (self) {
-    return Date_time(year=1970, month=1, day=1);
+    return date_time(year=1970, month=1, day=1);
 }
 method now (self) {
-    return Date_time(year=1970, month=1, day=1, hour=0, minute=0, second=0);
+    return date_time(year=1970, month=1, day=1, hour=0, minute=0, second=0);
+}
+method to_string(self) {
+    return add_0(self.day) + "." + add_0(self.month) + "." + self.year.to_string() + " " + add_0(self.hour) + ":" + add_0(self.minute) + ":" + add_0(self.second);
 }
 
-double method + with Dt_delta (self, self2) {
-    return Date_time(year=self.year, month=self.month, day=self.day, hour=self.hour, minute=self.minute, second=self.second + self2.seconds);
+double method of + with Dt_delta (self, self2) {
+    return date_time(year=self.year, month=self.month, day=self.day, hour=self.hour, minute=self.minute, second=self.second + self2.seconds);
 }
 
 }
@@ -987,28 +1039,31 @@ double method + with Dt_delta (self, self2) {
 class Dt_delta {
 
 constructor (self, days=0, hours=0, minutes=0, seconds=0) {
-    self.seconds = ((days * 24 + hours) * 60 + minutes) * 60 + seconds;
+    hours = days * 24 + hours;
+    minutes = hours * 60 + minutes;
+    self.seconds = minutes * 60 + seconds;
+    return self;
 }
 
-method today (self) {
-    return Date_time(year=1970, month=1, day=1);
+double method of + with Dt_delta (self, self2) {
+    return dt_delta(self.seconds + self2.seconds);
 }
-method now (self) {
-    return Date_time(year=1970, month=1, day=1, hour=0, minute=0, second=0);
-}
-
-double method + with Dt_delta (self, self2) {
-    return Dt_delta(self.seconds + self2.seconds);
-}
-
-double method + with Date_time (self, self2) {
-    return Date_time(year=self2.year, month=self2.month, day=self2.day, hour=self2.hour, minute=self2.minute, second=self2.second + self.seconds);
+double method of + with Date_time (self, self2) {
+    return date_time(year=self2.year, month=self2.month, day=self2.day, hour=self2.hour, minute=self2.minute, second=self2.second + self.seconds);
 }
 
 }
 
 main_program {
-    print(0);
+    dt = date_time();
+    print(dt.now());
+    
+    num = input().to_int();
+    date = dt.today();
+    while date.year < 2030 {
+        print("year: ", date.year, ",\tmonth: ", date.month, ",\tday: ", date.day, between="");
+        date = date + dt_delta( , num);
+    };
 }
 """
 
@@ -1034,9 +1089,12 @@ func passive is_sample (num) {
 }
 
 main_program {
+    print2 = copy(print);
+    print2.change( , array[]0, after=" - простое число\n"w1251);
+    
     foreach i from range(start=3, stop=1000, step=2) {
         if is_sample(i) {
-            print(i, " - простое число"w1251);
+            print2(i);
         };
     };
 }
@@ -1123,7 +1181,14 @@ main_program {
     print("\nok");
 }
 """
+
+string5 = """
+main_program <global: print> {
+    print = print + (range - 1) / 12;
+}
+"""
+
+
 if __name__ == '__main__':
     logs = True
-    print(len(string2))
-    print('', *from_qc_to_c_2(string1, "test/"), sep='\n')
+    print('', *from_qc_to_c_2(string, "test/"), sep='\n')  # C:/Users/alexs/source/repos/Summer project/Project1

@@ -29,6 +29,7 @@
 #define returnf2(sth) __boofer2 = __enlon(sth); return __returnfm(__boofer2, __dtp(self, self2), __clear clear)
 #define do_func(func, pos, nam, ...) __pf(func, pos, nam)(__boofer, __VA_ARGS__)
 #define start_method() __open_access(self, __class_name, __class)
+#define start_method2() __open_access(self, __class_name, __class); __open_access(self2, __class_name_2, __class_2)
 #define do_method(sth, i, pos, nam, ...) __pm(sth, __##i##_var, pos, nam)(__boofer, __boofer2, __VA_ARGS__)
 
 #define if_bool(sth) if (do_method(sth, to_bool, 0, 0)->flag)
@@ -48,8 +49,8 @@
 #define from_this(i) ((struct __class*)(*__nextarg)->start)->i  // !
 #define from_self(i) ((struct __class*)self->start)->i  // !
 #define from_self_class(i) ((struct __class_name*)__class_name->start)->i
-#define from_self2(i) ((struct __class2*)self2->start)->i  // !
-#define from_self2_class(i) ((struct __class_name_2*)__class_name_2->start)->i  // !
+#define from_self_2(i) ((struct __class_2*)self2->start)->i  // !
+#define from_self_class_2(i) ((struct __class_name_2*)__class_name_2->start)->i  // !
 
 #define var(name) __##name##_var
 #define arg(name) __##name##_arg
@@ -74,11 +75,11 @@ typedef enum {
 } errors;
 
 typedef enum {
-	 NOTH, BOOL, CLASS_NAME, ARRAY, FUNC, INT, LIST, RANGE, STRING, TYPE_ITERATOR
+	 NOTH, BOOL, CLASS_NAME, ARRAY, DATE_TIME, DT_DELTA, FUNC, INT, LIST, RANGE, STRING, TYPE_ITERATOR
 } class_name;
 
 enum named_args {
-	__after_arg, __arr_arg, __before_arg, __between_arg, __name_arg, __num_arg, __self2_arg, __self_arg, __start_arg, __start_str_arg, __step_arg, __sth_arg, __stop_arg, __str_arg
+	__after_arg, __arr_arg, __before_arg, __between_arg, __day_arg, __days_arg, __hour_arg, __hours_arg, __minute_arg, __minutes_arg, __month_arg, __n_arg, __name_arg, __num_arg, __second_arg, __seconds_arg, __self2_arg, __self_arg, __start_arg, __start_str_arg, __step_arg, __sth_arg, __stop_arg, __str_arg, __year_arg
 };
 
 #endif

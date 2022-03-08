@@ -33,8 +33,20 @@ files_dict = {
             'to_utf8': [('STRING', 12, True)],
             'to_windows1251': [('STRING', 13, True)]
         },
+        "vars": {
+            'Int': ['bin', 'module', 'numsign', 'to_bool', 'to_int', 'to_string'],
+            'String': ['reverse', 'to_bool', 'to_string', 'to_utf8', 'to_windows1251'],
+            'TypeIterator': ['next', 'to_type_iterator'],
+            'Range': ['next', 'to_range'],
+            'Bool': ['to_bool', 'to_int', 'to_string'],
+            'Array': ['reverse', 'to_array', 'to_bool', 'to_string'],
+            'Noth': [],
+            'ClassName': []
+        },
         "global_vars_read": ["range", "print", "length", "copy", "type_of", "is_instance",
-                             "to_another_type", "end_program", "return_self", "input"],
+                             "to_another_type", "end_program", "return_self", "input",
+                             "Int", "String", "Bool", "Noth", "ClassName", "Func", "Array",
+                             "TypeIterator", "Range"],
         "doubles": """object* {double_name} (object* __func, object* self, object* self2, ...) {{
 	start_func(NULL, arg(self), 1, arg(self2), 2);
 	static uint class_names[] = {{ {classes} }};

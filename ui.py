@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, ttk, simpledialog
+from tkinter import filedialog, messagebox, ttk
 from PIL import ImageTk
 from CustomNotebook import CustomNotebook
 from ScrollFrame import ScrollFrame

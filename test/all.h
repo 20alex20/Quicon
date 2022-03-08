@@ -118,6 +118,21 @@ object* __range(object* __func, object* self, object* start, object* stop, objec
 object* __next__range(object* __func, object* self, ...);
 
 
-object* __is_sample (object* __func, object* num, ...);
+object* __is_leap (object* __func, object* n, object* month, ...);
+object* __add_0 (object* __func, object* n, ...);
+
+object* __create__date_time(object* __func);
+object* __date_time (object* __func, object* self, object* year, object* month, object* day, object* hour, object* minute, object* second, ...);
+object* __today__date_time (object* __func, object* self);
+object* __now__date_time (object* __func, object* self);
+object* __to_string__date_time (object* __func, object* self);
+object* __addout_dt_delta__date_time (object* self, object* self2, ...);
+object* __addout__date_time (object* __func, object* self, object* self2, ...);
+
+object* __create__dt_delta(object* __func);
+object* __dt_delta (object* __func, object* self, object* days, object* hours, object* minutes, object* seconds, ...);
+object* __addout_dt_delta__dt_delta (object* self, object* self2, ...);
+object* __addout_date_time__dt_delta (object* self, object* self2, ...);
+object* __addout__dt_delta (object* __func, object* self, object* self2, ...);
 
 #endif

@@ -55,13 +55,18 @@ void start_program() {
 	end_program = __enlon(create__func(__end_program, FALSE, 0));
 	input = __enlon(create__func(__input, FALSE, 1, create__string("", US_ASCII)));
 
+	Date_time = __enlon(create__class_name(DATE_TIME, "Date_time", 6, 5, create__array(12, create__int(FALSE, 31),  create__int(FALSE, 28),  create__int(FALSE, 31),  create__int(FALSE, 30),  create__int(FALSE, 31),  create__int(FALSE, 30),  create__int(FALSE, 31),  create__int(FALSE, 31),  create__int(FALSE, 30),  create__int(FALSE, 31),  create__int(FALSE, 30),  create__int(FALSE, 31)), create__func(__today__date_time, FALSE, 1,NULL), create__func(__now__date_time, FALSE, 1,NULL), create__func(__to_string__date_time, FALSE, 1,NULL), create__func(__addout__date_time, FALSE, 2, NULL, NULL)));
+	Dt_delta = __enlon(create__class_name(DT_DELTA, "Dt_delta", 1, 1, create__func(__addout__dt_delta, FALSE, 2, NULL, NULL)));
 
 
-	is_sample = __enlon(create__func(__is_sample, FALSE, 1,NULL));
+	is_leap = __enlon(create__func(__is_leap, FALSE, 2,NULL, NULL));
+	add_0 = __enlon(create__func(__add_0, FALSE, 1,NULL));
+	date_time = __enlon(create__func(__date_time, FALSE, 7,create__func(__create__date_time, TRUE, 0), create__int(FALSE, 1970), create__int(FALSE, 1), create__int(FALSE, 1), create__int(FALSE, 0), create__int(FALSE, 0), create__int(FALSE, 0)));
+	dt_delta = __enlon(create__func(__dt_delta, FALSE, 5,create__func(__create__dt_delta, TRUE, 0), create__int(FALSE, 0), create__int(FALSE, 0), create__int(FALSE, 0), create__int(FALSE, 0)));
 }
 
 
-create_var(addout, 2, INT, 4 << 16, STRING, 7 << 16);
+create_var(addout, 4, DATE_TIME, 5 << 16, DT_DELTA, 1 << 16, INT, 4 << 16, STRING, 7 << 16);
 create_var(bin, 1, INT, 13 << 16);
 create_var(change, 1, FUNC, 2 << 16);
 create_var(current, 1, RANGE, 1);
@@ -86,9 +91,19 @@ create_var(to_bool, 4, BOOL, 1 << 16, ARRAY, 2 << 16, INT, 2 << 16, STRING, 2 <<
 create_var(to_func, 1, FUNC, 1 << 16);
 create_var(to_int, 3, BOOL, 2 << 16, INT, 1 << 16, STRING, 3 << 16);
 create_var(to_range, 1, RANGE, 1 << 16);
-create_var(to_string, 4, BOOL, 3 << 16, ARRAY, 3 << 16, INT, 3 << 16, STRING, 1 << 16);
+create_var(to_string, 5, BOOL, 3 << 16, ARRAY, 3 << 16, DATE_TIME, 4 << 16, INT, 3 << 16, STRING, 1 << 16);
 create_var(to_type_iterator, 1, TYPE_ITERATOR, 1 << 16);
 create_var(to_utf8, 1, STRING, 12 << 16);
 create_var(to_windows1251, 1, STRING, 13 << 16);
+create_var(arr_days, 1, DATE_TIME, 1 << 16);
+create_var(today, 1, DATE_TIME, 2 << 16);
+create_var(now, 1, DATE_TIME, 3 << 16);
+create_var(second, 1, DATE_TIME, 1);
+create_var(minute, 1, DATE_TIME, 2);
+create_var(hour, 1, DATE_TIME, 3);
+create_var(day, 1, DATE_TIME, 4);
+create_var(month, 1, DATE_TIME, 5);
+create_var(year, 1, DATE_TIME, 6);
+create_var(seconds, 1, DT_DELTA, 1);
 
-uint * __to_another_type_arr[] = {NULL, var(to_bool), NULL, var(to_array), var(to_func), var(to_int), NULL, var(to_range), var(to_string), var(to_type_iterator)};
+uint * __to_another_type_arr[] = {NULL, var(to_bool), NULL, var(to_array), NULL, NULL, var(to_func), var(to_int), NULL, var(to_range), var(to_string), var(to_type_iterator)};
