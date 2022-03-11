@@ -895,8 +895,8 @@ def files(directory: str):
             file.write(file_string + '\n')
 
     for name in ('array.c', 'bool.c', 'class_name.c', 'error.c', 'func.c', 'garbage_collector.c',
-                 'hidden.c', 'int.c', 'range.c', 'string.c', 'type_iterator.c'):
-        copy("files/" + name, directory)
+                 'hidden.c', 'int.c', 'range.c', 'string.c', 'type_iterator.c', 'to_ctype.c'):
+        copy("constant_files/" + name, directory)
     return directories
 
 
@@ -904,7 +904,7 @@ def from_qc_to_c_2(string: str, directory: str):
     global tags, words, words2, old_string, after_variable, operators_word, small_program, cur_i, \
         logs, fatality, errors, global_vars_read, global_vars_write, vars, args, data_main, \
         current_data, is_global, name_realname, end, class_name, arg_class, doubles, cur_file, \
-        another_classes
+        another_classes, all_args_names, data_additional
     cur_i = 0
     fatality = None
     errors = [[]]
@@ -960,11 +960,6 @@ def new_errors():
             cur_i += 1
         new_es.append((file, cur_n, string))
     return sorted(new_es)
-
-
-
-# ['assign(from(', '<v>', ', ', 'second', '), ', 'do_method(second, rod, 1, 0, create__int(FALSE, 60))', ')']
-# ['', 'assign(from(assign(from_self(second), do_method(second, rod, 1, 0, create__int(FALSE, 60))), second), do_method(second, rod, 1, 0, create__int(FALSE, 60)))', '']
 
 
 string = """
@@ -1100,95 +1095,6 @@ main_program {
 }
 """
 
-string2 = """
-class My {
-k = 0;
-constructor (self, num) {
-    self.er = self.k;
-}
-method next (self) {
-    ans = self.er.next();
-    if ans ~ StopIteration {
-        return StopIteration;
-    };
-    return ans * 789;
-}
-double method of + with My (self, self2) {
-    print("0");
-}
-}
-
-main_program {
-    print2 = copy(print());
-    print2.change( , array[]0, start="{", end="}\n");
-    foreach i from range() {
-        print2(i);
-    };
-}
-"""
-
-string3 = """
-func passive is_leap (n) {
-    if (n % 100 != 0 & n % 4 == 0) | n % 400 == 0 {
-       return 1;
-    };
-    return 0;
-}
-
-
-class Days_in_month {
-
-arr_days = array[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-constructor (self, year) {
-    self.cur_year = year;
-    self.iterator = type_iterator(self.arr_days);
-}
-method next (self) {
-    ans = self.iterator.next();
-    if ans ~ StopIteration {
-        year = year + 1;
-        self.iterator = type_iterator(self.arr_days);
-        return self.iterator.next();
-    };
-    if ans == 28 {
-        ans = ans + is_leap(self.year);
-    };
-    return ans;
-}
-
-}
-
-main_program {
-    print2 = copy(print);
-    print2.change( , array[]0, start="month: ", between="; days in month: ");
-    
-    dm = Days_in_month(2000);
-    foreach month from range(2000 * 12, 2022 * 12 + 1) {
-        print2(month, dm.next());
-    };
-}
-"""
-
-string4 = """
-main_program {
-
-    print2 = copy(print);
-    print2.change( , array[]0, end="");
-    
-    foreach i from type_iterator("2789327") {
-        print2(i.to_int() + 1);
-    };
-    print("\nok");
-}
-"""
-
-string5 = """
-main_program <global: print> {
-    print = print + (range - 1) / 12;
-}
-"""
-
-
 if __name__ == '__main__':
     logs = True
-    print('', *from_qc_to_c_2(string, "test/"), sep='\n')  # C:/Users/alexs/source/repos/Summer project/Project1
+    print('', *from_qc_to_c_2(string, "test/"), sep='\n')

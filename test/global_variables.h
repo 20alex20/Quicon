@@ -56,7 +56,7 @@ struct DT_DELTA {
 };
 
 
-extern uint var(next)[], var(less)[], var(to_func)[], var(to_array)[], var(change)[], var(to_utf8)[], var(day)[], var(year)[], var(numsign)[], var(minute)[], var(divide)[], var(second)[], var(stop)[], var(addout)[], var(bin)[], var(more)[], var(to_windows1251)[], var(to_range)[], var(rod)[], var(to_bool)[], var(reverse)[], var(pubi)[], var(module)[], var(subtractout)[], var(equal)[], var(slice)[], var(month)[], var(to_type_iterator)[], var(step)[], var(seconds)[], var(hour)[], var(now)[], var(to_string)[], var(tabi)[], var(multiply)[], var(today)[], var(arr_days)[], var(current)[], var(to_int)[], var(my)[];
+extern uint var(next)[], var(reverse)[], var(to_int)[], var(to_range)[], var(my)[], var(to_bool)[], var(divide)[], var(year)[], var(addout)[], var(step)[], var(bin)[], var(to_type_iterator)[], var(change)[], var(more)[], var(today)[], var(now)[], var(to_utf8)[], var(stop)[], var(second)[], var(current)[], var(month)[], var(to_string)[], var(multiply)[], var(arr_days)[], var(seconds)[], var(minute)[], var(to_func)[], var(to_windows1251)[], var(day)[], var(subtractout)[], var(hour)[], var(slice)[], var(pubi)[], var(tabi)[], var(to_array)[], var(module)[], var(less)[], var(numsign)[], var(equal)[], var(rod)[];
 
 object* Noth, * Bool, * ClassName, * Array, * Date_time, * Dt_delta, * Func, * Int, * List, * Range, * String, * TypeIterator;
 object* range, * print, * length, * copy, * type_of, * is_instance, * to_another_type, * end_program, * return_self, * input, * Int, * String, * Bool, * Noth, * ClassName, * Func, * Array, * TypeIterator, * Range, * is_leap, * add_0, * date_time, * date_time, * Date_time, * dt_delta, * dt_delta, * Dt_delta;

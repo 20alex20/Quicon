@@ -225,6 +225,8 @@ object* __multiply_int__int(object* self, object* self2) {
 			j = 0;
 		}
 	}
+	if (!num[len - 1])
+		len--;
 	obj->flag = self->flag != self2->flag;
 	obj->len = len;
 	obj->start = num;

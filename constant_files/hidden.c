@@ -133,17 +133,6 @@ uint* __universal_recursion(uint* start, ushort len, uint num) {
 	if (num > n)
 		return __universal_recursion(start + l1, l2, num);
 }
-/*
-object** __from(object* self, uint name) {
-	if (self->name < 11)
-		__fast_error(__TYPE_ARG_ERROR, self->nop);
-	size_t start = self->len;
-	size_t index = __recursia_sth_from(start, self->flag, name);
-	if (index == NULL)
-		__fast_error(__NAME_ARG_ERROR, name);
-	return (object**)self->start + (index - start) / 4;
-}
-*/
 
 
 object** __from2(object* self, uint* name) {
