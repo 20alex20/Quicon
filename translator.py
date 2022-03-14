@@ -125,7 +125,7 @@ def fragment3():
         return fatal_error("Отсутствует присваивание в переменную")
     cur_i += 1
     skip_tabs()
-    ans = recursia(words["<num_var>"])
+    ans = recursion(words["<num_var>"])
     if ans is None:
         return None
     if old_string[cur_i] != ';':
@@ -143,7 +143,7 @@ def parse_tag(element: str):
         tag = tags[element]
         length = 0
         while True:
-            boofer = recursia(tag)
+            boofer = recursion(tag)
             if boofer is None:
                 return to_replace, None
             if element == "<nam_args>":
@@ -174,7 +174,7 @@ def parse_tag(element: str):
         errors.append([])
         while True:
             old_cur_i = cur_i
-            boofer = recursia(tag)
+            boofer = recursion(tag)
             if boofer is None:
                 fatality = None
                 cur_i = old_cur_i
@@ -209,7 +209,7 @@ def parse_tag(element: str):
             boofer = fragment1(num)
         elif txt == 'array':
             cur_i -= 5
-            return to_replace, recursia(words["array"])
+            return to_replace, recursion(words["array"])
         else:
             boofer = txt
             i = skip_tabs_sample()
@@ -229,7 +229,7 @@ def parse_tag(element: str):
                     boofer not in global_vars_read:
                 boofer = error("Неверно объявлена/использована переменная")
         if old_string[cur_i] == ".":
-            rec = recursia(after_variable[old_string[cur_i]])
+            rec = recursion(after_variable[old_string[cur_i]])
             if rec is None:
                 return to_replace, None
             st = ''
@@ -258,7 +258,7 @@ def parse_tag(element: str):
                 boofer = rec.replace("<v>", boofer)
 
         while old_string[cur_i] in ".[(":
-            rec = recursia(after_variable[old_string[cur_i]])
+            rec = recursion(after_variable[old_string[cur_i]])
             if rec is None:
                 return to_replace, None
             boofer = rec.replace("<v>", boofer)
@@ -402,7 +402,7 @@ def parse_tag(element: str):
                 "old": ["< ><var_name> ,< ><var_name> "],
                 "new": ["< ><var_name><>< ><var_name>"]
             }
-            ans = recursia(tag)
+            ans = recursion(tag)
             if ans is None:
                 return to_replace, None
             args_names = [i.lstrip() for i in ans.split('<>')]
@@ -427,7 +427,7 @@ def parse_tag(element: str):
             args_names = []
             args_values = []
             while True:
-                boofer = recursia(tag)
+                boofer = recursion(tag)
                 if boofer is None:
                     if not args_names:
                         to_replace = [("<len>", '0'), ("a<func_args3>", ''), ("a<arr_num>", ''),
@@ -488,7 +488,7 @@ def parse_tag(element: str):
             cur_i += 1
         return to_replace, ""
     elif element == "<rec>":
-        return to_replace, recursia()
+        return to_replace, recursion()
     elif element == "<end>":
         if not end:
             return to_replace, error("Здесь нельзя использовать return")
@@ -500,7 +500,7 @@ def parse_tag(element: str):
 
 def arg(level=6, is_sth=False, q=False):
     global cur_i
-    new_string = recursia(is_sth=is_sth, q=q)
+    new_string = recursion(is_sth=is_sth, q=q)
     if level == 0 or new_string is None:
         return new_string
     while True:
@@ -549,7 +549,7 @@ def seach_word(is_sth: bool):
         return words["<num_var>"], False
 
 
-def recursia(flag=None, is_sth=False, q=False):
+def recursion(flag=None, is_sth=False, q=False):
     global fatality, cur_i
     if flag is None:
         word, is_sth = seach_word(is_sth)
@@ -626,7 +626,7 @@ def create_class(data_class, generate_class):
             if data_class["constructor"]:
                 return None
             current_data = data_class["constructor"]
-            ans = recursia(small_program[word], True)
+            ans = recursion(small_program[word], True)
             if ans is None:
                 return None
             name, start, num, endd = ans.split('<>')
@@ -637,7 +637,7 @@ def create_class(data_class, generate_class):
             data_main["global_func"].append(ans)
         elif word in ("method", "double"):
             current_data = data_class[word]
-            ans = recursia(small_program[word], True)
+            ans = recursion(small_program[word], True)
             if ans is None:
                 return None
             name, ans = ans.split('<>')
@@ -740,14 +740,14 @@ def program():
             if data_main["main_program"]:
                 break
             current_data = data_main["main_program"]
-            ans = recursia(small_program["main_program"], True)
+            ans = recursion(small_program["main_program"], True)
             if ans is None:
                 break
             data_main["main_program"].append(ans)
         elif word == "func":
             cur_file = "functions.c"
             current_data = data_additional["funcs"]
-            ans = recursia(small_program["global_func"], True)
+            ans = recursion(small_program["global_func"], True)
             if ans is None:
                 break
             data_main["global_func"].append(ans)
